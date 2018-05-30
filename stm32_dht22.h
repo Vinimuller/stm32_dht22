@@ -1,6 +1,14 @@
 #include "stm32l0xx.h"
 #include "stm32_delay.h"
 
+/*--- DHT22 for STM32 ---
+ *
+ * This is an adaptation of https://github.com/LonelyWolf/stm32/tree/master/am2302.
+ * Reads DHT22 data based in a delay function of 5 microseconds that work with timers.
+ *
+ * Vinícius Müller Silveira - https://github.com/Vinimuller - 30/05/2018
+ */
+
 #define DHT22_SDA_PORT 	GPIOA
 #define DHT22_SDA_PIN 	10
 
