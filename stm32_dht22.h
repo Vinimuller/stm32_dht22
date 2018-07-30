@@ -19,6 +19,9 @@
 #define DHT22_RCV_RCV_TIMEOUT 	4
 #define DHT22_PARITY_ERROR		5
 
+#define COUNTER_TIMEOUT		   1000
+#define COUNTER_HIGH_THRESHOLD 60
+
 struct s_dht22Data {
 	uint8_t  hMSB;
 	uint8_t  hLSB;

@@ -27,32 +27,32 @@ uint32_t DHT22_GetReadings(void) {
 
 	// Wait for AM2302 to start communicate
 	wait = 0;
-	while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 15)) Delay_us(5);
-	if (wait > 12) return DHT22_RCV_NO_RESPONSE;
+	while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < COUNTER_TIMEOUT));
+	if (wait > COUNTER_TIMEOUT) return DHT22_RCV_NO_RESPONSE;
 
 	// Check ACK strobe from sensor
-	while (!(DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 15)) Delay_us(5);
-	if (wait > 12) return DHT22_RCV_BAD_ACK1;
+	while (!(DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < COUNTER_TIMEOUT));
+	if (wait > COUNTER_TIMEOUT) return DHT22_RCV_BAD_ACK1;
 
 	wait = 0;
-	while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 15)) Delay_us(5);
-	if (wait > 12) return DHT22_RCV_BAD_ACK2;
+	while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < COUNTER_TIMEOUT));
+	if (wait > COUNTER_TIMEOUT) return DHT22_RCV_BAD_ACK2;
 
 	// ACK strobe received --> receive 40 bits
 	i = 0;
 	while (i < 40) {
 		// Measure bit start impulse (T_low = 50us)
 		wait = 0;
-		while (!(DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 15)) Delay_us(5);
-		if (wait > 15) {
+		while (!(DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < COUNTER_TIMEOUT));
+		if (wait > COUNTER_TIMEOUT) {
 			// invalid bit start impulse length
 			dht22Data.bits[i] = 0xffff;
-			while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 20)) Delay_us(5);
+			while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < COUNTER_TIMEOUT));
 		} else {
 			// Measure bit impulse length (T_h0 = 25us, T_h1 = 70us)
 			wait = 0;
-			while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 20)) Delay_us(5);
-			dht22Data.bits[i] = (wait < 20) ? wait : 0xffff;
+			while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < COUNTER_TIMEOUT));
+			dht22Data.bits[i] = (wait < COUNTER_TIMEOUT) ? wait : 0xffff;
 		}
 		i++;
 	}
@@ -72,26 +72,26 @@ uint16_t DHT22_DecodeReadings(void) {
 	dht22Data.hMSB = 0;
 	for (; i < 8; i++) {
 		dht22Data.hMSB <<= 1;
-		if (dht22Data.bits[i] > 6) dht22Data.hMSB |= 1;
+		if (dht22Data.bits[i] > COUNTER_HIGH_THRESHOLD) dht22Data.hMSB |= 1;
 	}
 	dht22Data.hLSB = 0;
 	for (; i < 16; i++) {
 		dht22Data.hLSB <<= 1;
-		if (dht22Data.bits[i] > 6) dht22Data.hLSB |= 1;
+		if (dht22Data.bits[i] > COUNTER_HIGH_THRESHOLD) dht22Data.hLSB |= 1;
 	}
 	dht22Data.tMSB = 0;
 	for (; i < 24; i++) {
 		dht22Data.tMSB <<= 1;
-		if (dht22Data.bits[i] > 6) dht22Data.tMSB |= 1;
+		if (dht22Data.bits[i] > COUNTER_HIGH_THRESHOLD) dht22Data.tMSB |= 1;
 	}
 	dht22Data.tLSB = 0;
 	for (; i < 32; i++) {
 		dht22Data.tLSB <<= 1;
-		if (dht22Data.bits[i] > 6) dht22Data.tLSB |= 1;
+		if (dht22Data.bits[i] > COUNTER_HIGH_THRESHOLD) dht22Data.tLSB |= 1;
 	}
 	for (; i < 40; i++) {
 		dht22Data.parity_rcv <<= 1;
-		if (dht22Data.bits[i] > 6) dht22Data.parity_rcv |= 1;
+		if (dht22Data.bits[i] > COUNTER_HIGH_THRESHOLD) dht22Data.parity_rcv |= 1;
 	}
 
 	parity  = dht22Data.hMSB + dht22Data.hLSB + dht22Data.tMSB + dht22Data.tLSB;
