@@ -1,4 +1,4 @@
-#include "stm32l0xx.h"
+#include "stm32f3xx.h"
 #include "stm32_delay.h"
 
 /*--- DHT22 for STM32 ---
@@ -9,8 +9,8 @@
  * Vinícius Müller Silveira - https://github.com/Vinimuller - 30/05/2018
  */
 
-#define DHT22_SDA_PORT 	GPIOA
-#define DHT22_SDA_PIN 	10
+#define DHT22_SDA_PORT 	GPIOB
+#define DHT22_SDA_PIN 	14
 
 #define DHT22_RCV_OK			0
 #define DHT22_RCV_NO_RESPONSE	1

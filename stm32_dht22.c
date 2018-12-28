@@ -28,15 +28,15 @@ uint32_t DHT22_GetReadings(void) {
 	// Wait for AM2302 to start communicate
 	wait = 0;
 	while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 15)) Delay_us(5);
-	if (wait > 12) return DHT22_RCV_NO_RESPONSE;
+	if (wait > 15) return DHT22_RCV_NO_RESPONSE;
 
 	// Check ACK strobe from sensor
 	while (!(DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 15)) Delay_us(5);
-	if (wait > 12) return DHT22_RCV_BAD_ACK1;
+	if (wait > 15) return DHT22_RCV_BAD_ACK1;
 
 	wait = 0;
 	while ((DHT22_SDA_PORT->IDR & (1 << DHT22_SDA_PIN)) && (wait++ < 15)) Delay_us(5);
-	if (wait > 12) return DHT22_RCV_BAD_ACK2;
+	if (wait > 15) return DHT22_RCV_BAD_ACK2;
 
 	// ACK strobe received --> receive 40 bits
 	i = 0;
