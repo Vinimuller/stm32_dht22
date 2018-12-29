@@ -28,7 +28,7 @@ struct s_dht22Data {
 	uint16_t bits[40];
 };
 
-void DHT22_init(void);
+void DHT22_Init(void);
 uint32_t DHT22_GetReadings(void);
 uint16_t DHT22_DecodeReadings(void);
 float DHT22_GetHumidity(void);
